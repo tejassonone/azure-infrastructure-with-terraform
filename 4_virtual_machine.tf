@@ -33,8 +33,14 @@ resource "azurerm_linux_virtual_machine" "app-linux-vm" {
     azurerm_network_interface.app-nic-ts.id,
   ]
 
-  admin_password      = "PasswordHere123!"
-  disable_password_authentication = false
+#   admin_password      = azurerm_key_vault_secret.vmpassword.value
+#   admin_password = "Pass@123"
+#   disable_password_authentication = false
+
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = file("~/.ssh/id_rsa.pub")
+  }
 
 
 
