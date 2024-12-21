@@ -1,4 +1,10 @@
+
+locals {
+    resource_group_name = "app-rgci-ts"
+    location = "South India"
+}
+
 resource "azurerm_resource_group" "app_rg" {
-    name = "app-rg-ts"
-    location = "West India"
+    name = local.resource_group_name
+    location = local.location
 }
