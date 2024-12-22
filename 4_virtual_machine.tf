@@ -22,6 +22,17 @@ resource "azurerm_network_interface" "app-nic-ts" {
 }
 
 
+data "template_cloudinit_config" "linux-vmconfig-ts" {
+  gzip = true
+  base64_encode = true
+
+  part {
+    content_type = "text/cloud-config"
+    content = "packages:['nginx']"
+  }
+}
+
+
 
 resource "azurerm_linux_virtual_machine" "app-linux-vm" {
   name                = "app-linux-vm-ts"
@@ -34,13 +45,15 @@ resource "azurerm_linux_virtual_machine" "app-linux-vm" {
   ]
 
 #   admin_password      = azurerm_key_vault_secret.vmpassword.value
-#   admin_password = "Pass@123"
-#   disable_password_authentication = false
+  admin_password = "Pass@123"
+  disable_password_authentication = false
 
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")
-  }
+  # admin_ssh_key {
+  #   username   = "adminuser"
+  #   public_key = file("~/.ssh/id_rsa.pub")
+  # }
+
+  custom_data = data.template_cloudinit_config.linux-vmconfig-ts.rendered
 
 
 
